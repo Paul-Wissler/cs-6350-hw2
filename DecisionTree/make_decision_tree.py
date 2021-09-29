@@ -1,12 +1,12 @@
 import pandas as pd
 import numpy as np
 
-from .error_calcs import calc_gain
+from .error_calcs import calc_gain, calc_entropy
 
 
 class DecisionTreeModel:
 
-    def __init__(self, X: pd.DataFrame, y: pd.Series, error_f, 
+    def __init__(self, X: pd.DataFrame, y: pd.Series, error_f=calc_entropy, 
             max_tree_depth=None, default_value_selection='majority'):
         self.X = X.copy()
         self.y = y.copy()
