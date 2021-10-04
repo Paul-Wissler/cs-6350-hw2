@@ -24,7 +24,10 @@ class BaggerModel:
         if not self.numeric_cols:
             return X
         for col, m in self.median.iteritems():
-            is_gte_m = X[col] >= m
+            try:
+                is_gte_m = X[col] >= m
+            except TypeError:
+                print(X[col])
             X[col].loc[is_gte_m] = f'>={m}'
             X[col].loc[~is_gte_m] = f'<{m}'
         return X
@@ -46,7 +49,7 @@ class BaggerModel:
         bag = list()
         for t in range(bag_rounds):
             if reproducible_seed:
-                X_s = X.sample(n=sample_rate, replace=True, random_state=t)
+                X_s = X.sample(n=sample_rate, replace=True, random_state=t * 100000)
             else:
                 X_s = X.sample(n=sample_rate, replace=True)
             y_s = y.iloc[X_s.index]
