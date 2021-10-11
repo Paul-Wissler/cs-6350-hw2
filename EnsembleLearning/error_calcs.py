@@ -38,28 +38,23 @@ def calc_weighted_gain(x: pd.Series, y: pd.Series, w: pd.Series,
         w_v = w.loc[is_x_eq_v]
         prob_y_v = calc_weighted_discrete_probability(y_v, w_v,
             null_x_v=null_y_v, null_frac=frac_of_x)
-        # print(prob_y_v)
         e.append(s_v / s * f(prob_y_v, 
             unique_outcomes=len(np.unique(y))))
-    print(H_y)
-    print(sum(e))
-    print(f'{x.name}: {H_y - sum(e)}')
-    return H_y - sum(e)
+    # print('\n\n')
+    # print(H_y)
+    # print(sum(e))
+    print(f'{x.name}: {H_y - np.sum(e)}')
+    return H_y - np.sum(e)
 
 
 def calc_weighted_discrete_probability(x: np.array, w: list, 
         null_x_v=pd.Series([]), null_frac=0) -> float:
     w = np.array(w)
     unique_vals = np.unique(x)
-    null_size = len(null_x_v) * null_frac
+    null_size = len(null_x_v) * null_frac # Ignore for now
     p = pd.Series([])
+    w = np.divide(w, np.sum(w))
     for i in unique_vals:
-        num = sum(np.multiply(1 * (x==i), w)) + null_frac * sum(null_x_v==i)
-        # p[i] = num / (len(x) + null_size)
+        num = np.sum(np.multiply(1 * (x==i), w)) + null_frac * np.sum(null_x_v==i)
         p[i] = num
-    # print(sum(p))
-    # DANGER FYI: CURRENTLY NORMALIZING HERE AND IN TREE, 
-    # DECIDE IF WEIGHTS OR PROBABILITIES SHOULD BE NORMALIZED
-    # print(np.sum(p.values))
-    # print(np.sum(p.divide(np.sum(p.values))))
-    return p.divide(np.sum(p.values))
+    return p

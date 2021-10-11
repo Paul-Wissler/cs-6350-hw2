@@ -62,7 +62,7 @@ class DecisionTreeModel:
             if len(y_v.unique()) == 1:
                 d[split_node][v] = y_v.unique()[0]
             elif max_tree_depth == 1:
-                d[split_node][v] = self.default_value(y)
+                d[split_node][v] = self.default_value(y_v)
             else:
                 d[split_node][v] = self.make_decision_tree(X_v, y_v, 
                     error_f, max_tree_depth - 1)
@@ -96,6 +96,6 @@ class DecisionTreeModel:
             elif isinstance(tree[node], dict):
                 return self.check_tree(row, tree[node][row[node]])
             else:
-                return 'TREE FAILED'
+                return self.y.mode().iloc[0]
         except KeyError:
-            return f'TREE FAILED: {node} not in tree.'
+            return self.y.mode().iloc[0]

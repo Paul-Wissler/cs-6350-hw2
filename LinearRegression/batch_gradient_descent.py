@@ -4,32 +4,31 @@ import pandas as pd
 
 class BatchGradientDescentModel:
 
-    def __init__(self, X: pd.DataFrame, y: pd.Series, rate=0.1, error=0.05, max_rounds=100,):
+    def __init__(self, X: pd.DataFrame, y: pd.Series, rate=0.1, convergence_threshold=1e-6, max_rounds=100, bias=0):
+        X['MODEL_BIAS'] = 1
         self.X = X.copy()
         self.y = y.copy()
         self.max_rounds = max_rounds
         self.rate = rate
-        self.error = error
-        self.convergence_of_weights = pd.Series()
-        self.weights = self.create_model(X.copy(), y.copy())
+        self.convergence_threshold = convergence_threshold
+        self.cost_of_each_step = pd.Series()
+        self.weights = self.create_model(X.copy(), y.copy(), bias)
 
-    def create_model(self, X: pd.DataFrame, y: pd.Series):
+    def create_model(self, X: pd.DataFrame, y: pd.Series, bias: float):
         w = pd.Series([0] * len(X.columns), index=X.columns)
+        self.convergence_of_weights = pd.Series(
+            [self.compute_cost(self.X.copy(), self.y.copy(), w)]
+        ).reset_index(drop=True)
+        w.loc['MODEL_BIAS'] = bias
         i = 0
-        while i <= self.max_rounds + 1: #TODO: add error check to condition
+        while i <= self.max_rounds + 1:
             if i == self.max_rounds:
-                print('WARNING: Model failed to converge below specified error')
-                # print(w)
-                # print(self.convergence_of_weights)
+                print('WARNING: Model failed to converge')
                 return w
             i += 1
             w = self.compute_new_weights(self.compute_gradient(w), w)
-            # cost = self.compute_cost(w)
-            # e = self.compute_mean_error(w) # Not sure about this implementation . . .
-            # print(e)
-            # print(self.compute_norm(e))
-            # print(np.abs(np.mean(e)))
-        # print(w)
+            if self.convergence_of_weights.iloc[-1] < self.convergence_threshold:
+                return w
         return w
 
     def compute_new_weights(self, gradient: pd.Series, weights: pd.Series) -> pd.Series:
@@ -38,6 +37,12 @@ class BatchGradientDescentModel:
         self.convergence_of_weights = (
             self.convergence_of_weights.append(
                 pd.Series([self.compute_norm(new_weights - weights)]), 
+                ignore_index=True
+            ).reset_index(drop=True)
+        )
+        self.cost_of_each_step = (
+            self.cost_of_each_step.append(
+                pd.Series([self.compute_cost(self.X.copy(), self.y.copy(), new_weights)]), 
                 ignore_index=True
             ).reset_index(drop=True)
         )
@@ -55,6 +60,7 @@ class BatchGradientDescentModel:
         return -np.dot(error, self.X[col].to_numpy())
 
     def compute_cost(self, X, y, weights: pd.Series) -> float:
+        X['MODEL_BIAS'] = weights['MODEL_BIAS']
         x_i_multiply_w = np.dot(X.to_numpy(), weights.to_numpy())
         error = np.square(y.to_numpy() - x_i_multiply_w)
         return np.sum(0.5 * np.square(error))

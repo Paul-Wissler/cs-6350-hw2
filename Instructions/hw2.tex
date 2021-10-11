@@ -81,9 +81,37 @@ m > \frac{1}{\epsilon}\big(\log(|H|) + \log\frac{1}{\delta}\big).
 	For each target function in $C$, we assume both algorithms can find a hypothesis consistent with the training data. 
 	\begin{enumerate}
 		\item~[1 point] According to Occam's Razor principle, which learning algorithm's  result hypothesis do you prefer? Why?
+		
+		\emph{Answer}
+		
+		We desire an answer that requires the least amount of data with some minimum level of confidence.
+		
 		\item~[1 point]  How is this principle reflected in our PAC guarantee? Please use the above inequality to explain why we will prefer the corresponding result hypothesis. 
+		
+		\emph{Answer}
+		
+		This principle is reflected in the $log|H|$ term which is monotonic increasing for $|H|>0$, so smaller $|H|$ implies a smaller number of necessary examples $m$.
+		
 	\end{enumerate}
-	\item~[3 points] Let us investigate algorithm $L_1$. Suppose we have $n$ input features, and the size of the hypothesis space used by $L_1$ is $3^n$. Given $n=10$ features, if we want to guarantee a 95\% chance of learning a hypothesis of at least 90\% generalization accuracy, how many training examples at least do we need for $L_1$?
+	\item~[3 points] Let us investigate algorithm $L_1$. Suppose we have $n$ input features, and the size of the hypothesis space used by $L_1$ is $3^n$. Given $n=10$ features, if we want to guarantee a 95\% chance of learning a hypothesis of at least 90\% generalization accuracy, how many training examples at least do we need for $L_1$?\
+	
+	\emph{Answer}
+	
+	\[
+        |H| = 3^{n}, n=10 => |H|=3^{10}=59,049
+	\]
+	\[
+	    \epsilon=1-0.9=0.1, 1-\delta=0.95 => \delta=0.05
+	\]
+	\[
+	    m>\frac{1}{0.1}*(log|59,049|+log\frac{1}{0.05})
+	\]
+	\[
+	    m>139.8
+	\]
+	
+	Therefore, we require at least 140 training examples.
+	
 \end{enumerate}
 
 \item~[5 points] In our lecture about AdaBoost algorithm, we introduced the definition of weighted error in each round $t$, 
@@ -98,17 +126,170 @@ where $D_t(i)$ is the weight of $i$-th training example, and $h_t(x_i)$ is the p
 \item~[20 points] Can you figure out an equivalent linear classifier for the following Boolean functions? Please point out what the weight vector, the bias parameter and the hyperplane are. Note that the hyperplane is determined by an equation. If you cannot find out a  linear classifier, please explain why, and work out some feature mapping such that, after mapping all the inputs of these functions into a higher dimensional space, there is a hyperplane that well separates the inputs; please write down the separating hyperplane in the new feature space. 
 	\begin{enumerate}
 		\item~[2 point] $f(x_1, x_2, x_3) = x_1 \land \neg x_2 \land \neg x_3$
+		
+		\emph{Answer}
+		
+		Based on that logic function, would expect $y=1$ if $x_1-x_2-x_3>=1$. Table 1 results prove that this function works, so the hyperplane is $y=x_1-x_2-x_3-1$ and $bias=-1$, with a weight vector of $1's$.
+		
+		\begin{table}
+        	\centering
+        	\begin{tabular}{ccccc|c}
+        		$x_1 $ & $x_2$ & $x_3$ & $y$ & $x_1-x_2-x_3-1$ & $sign$\\ 
+        		\hline\hline
+        		0 & 0 & 0 & 0 & -1 & 0 \\ \hline
+        		0 & 0 & 1 & 0 & -2 & 0 \\ \hline
+        		0 & 1 & 0 & 0 & -2 & 0 \\ \hline
+        		0 & 1 & 1 & 0 & -3 & 0 \\ \hline
+        		1 & 0 & 0 & 1 &  0 & 1 \\ \hline
+        		1 & 0 & 1 & 0 & -1 & 0 \\ \hline
+        		1 & 1 & 0 & 0 & -1 & 0 \\ \hline
+        		1 & 1 & 1 & 0 & -2 & 0 \\ \hline
+        	\end{tabular}
+        	\caption{Table of answers for 3a.}\label{tb:1}
+        \end{table}
+		
 		\item~[2 point] $f(x_1, x_2, x_3) = \neg x_1 \lor \neg x_2 \lor \neg x_3$ 
+		
+		\emph{Answer}
+		
+		Based on that logic function, would expect $y=1$ if $x_1+x_2+x_3<=-2$. Table 2 results prove that this function works, so the hyperplane is $y=2-x_1-x_2-x_3$ and $bias=2$, with a weight vector of $1's$.
+		
+		\begin{table}
+        	\centering
+        	\begin{tabular}{ccccc|c}
+        		$x_1 $ & $x_2$ & $x_3$ & $y$ & $2-x_1-x_2-x_3$ & $sign$\\ 
+        		\hline\hline
+        		0 & 0 & 0 & 1 &  2 & 1 \\ \hline
+        		0 & 0 & 1 & 1 &  1 & 1 \\ \hline
+        		0 & 1 & 0 & 1 &  1 & 1 \\ \hline
+        		0 & 1 & 1 & 1 &  0 & 1 \\ \hline
+        		1 & 0 & 0 & 1 &  1 & 1 \\ \hline
+        		1 & 0 & 1 & 1 &  0 & 1 \\ \hline
+        		1 & 1 & 0 & 1 &  0 & 1 \\ \hline
+        		1 & 1 & 1 & 0 & -1 & 0 \\ \hline
+        	\end{tabular}
+        	\caption{Table of answers for 3b.}\label{tb:1}
+        \end{table}
+		
 		\item~[8 points] $f(x_1, x_2, x_3, x_4) = (x_1 \lor x_2) \land (x_3 \lor x_4)$
+		
+		\emph{Answer}
+		
+		Based on that logic function, would expect $y=1$ if $(x_1+x_2)+(x_3+x_4)>=2$, but this doesn't work because if $x_1=x_2=1$ and $x_3=x_4=0$ then $y=1$ instead of $0$. Instead, let's try a feature mapping that multiplies items in each logic parenthetical together, which yields $(x_1+x_2-x_1x_2)+(x_3+x_4-x_3x_4)>=2$. Table 3 results prove that this function works, so the hyperplane is $y=(x_1+x_2-x_1x_2)+(x_3+x_4-x_3x_4)-2$ and $bias=-2$, with a weight vector of $1's$.
+		
+		\begin{table}
+        	\centering
+        	\begin{tabular}{cccccc|c}
+        		$x_1 $ & $x_2$ & $x_3$ & $x_4$ & $y$ & $2-x_1-x_2-x_3$ & $sign$\\ 
+        		\hline\hline
+        		0 & 0 & 0 & 0 & 0 & -2 & 0 \\ \hline
+        		0 & 0 & 0 & 1 & 0 & -1 & 0 \\ \hline
+        		0 & 0 & 1 & 0 & 0 & -1 & 0 \\ \hline
+        		0 & 0 & 1 & 1 & 0 & -1 & 0 \\ \hline
+        		0 & 1 & 0 & 0 & 0 & -1 & 0 \\ \hline
+        		0 & 1 & 0 & 1 & 1 &  0 & 1 \\ \hline
+        		0 & 1 & 1 & 0 & 1 &  0 & 1 \\ \hline
+        		0 & 1 & 1 & 1 & 1 &  0 & 1 \\ \hline
+        		1 & 0 & 0 & 0 & 0 & -1 & 0 \\ \hline
+        		1 & 0 & 0 & 1 & 1 &  0 & 1 \\ \hline
+        		1 & 0 & 1 & 0 & 1 &  0 & 1 \\ \hline
+        		1 & 0 & 1 & 1 & 1 &  0 & 1 \\ \hline
+        		1 & 1 & 0 & 0 & 0 & -1 & 0 \\ \hline
+        		1 & 1 & 0 & 1 & 1 &  0 & 1 \\ \hline
+        		1 & 1 & 1 & 0 & 1 &  0 & 1 \\ \hline
+        		1 & 1 & 1 & 1 & 1 &  0 & 1 \\ \hline
+        	\end{tabular}
+        	\caption{Table of answers for 3c.}\label{tb:1}
+        \end{table}
+        
 		\item ~[8 points] $f(x_1, x_2) = (x_1 \land x_2) \lor (\neg x_1 \land \neg x_2)$
+		
+		\emph{Answer}
+		
+		Based on that logic function, would expect $y=1$ if $(x_1+x_2-2)+(-x_1-x_2)>=1$, but this doesn't work because if $x_1$ and $x_2$ cancel out, yielding $-3>=1$, which is false. Instead, let's try a feature mapping that squares each parenthetical, which yields $(x_1+x_2-2)^2+(-x_1-x_2)^2>=1$. But this doesn't work when $x_1=0, x_2=1$ because that yields a true statement when it \emph{should} be false. Note that when $x_1=x_2=1$, then $y=3$. So, what if we just up the third term from $-1$ to $-3$ so when $x_1=x_2=1$ would yield $y=1$. Table 4 results prove that this function works, so the hyperplane is $y=(x_1+x_2-2)^2+(-x_1-x_2)^2-3$, which if we expand it becomes $y=2x_1^2+2x_2^2+4x_1x_2-4x_1-4x_2$ and $bias=0$, with a weight vector of $[2, 2, 4, -4, -4]$.
+		
+		\begin{table}
+        	\centering
+        	\begin{tabular}{cccc|c}
+        		$x_1 $ & $x_2$ & $y$ & $(x_1+x_2-2)^2+(-x_1-x_2)^2-3$ & $sign$\\ 
+        		\hline\hline
+        		0 & 0 & 1 &  0 & 1 \\ \hline
+        		0 & 1 & 0 & -2 & 0 \\ \hline
+        		1 & 0 & 0 & -2 & 0 \\ \hline
+        		1 & 1 & 1 &  0 & 1 \\ \hline
+        	\end{tabular}
+        	\caption{Table of answers for 3d.}\label{tb:1}
+        \end{table}
 	\end{enumerate}
 		
 	
 	\item~[\textbf{Bonus}]~[8 points]  Given two vectors $\x = [x_1,  x_2]$ and $\y=[y_1,  y_2]$, find a feature mapping $\phi(\cdot)$ for each of the following functions, such that the function is equal to the inner product between the mapped feature vectors, $\phi(\x)$ and $\phi(\y)$. For example, $(\x^\top \y)^0 = \phi(\x)^\top \phi(\y)$ where $\phi(\x) = [1]$ and $\phi(\y) = [1]$; $(\x^\top \y)^1 = \phi(\x)^\top \phi(\y)$ where $\phi(\x) = \x$ and $\phi(\y) = \y$. 
 	\begin{enumerate}
 		\item~[2 points] $(\x^\top \y)^2$
+		
+		\emph{Answer}
+		
+		\[
+		    (\x^\top \y)^2 = x_1^2y_1^2 + 2x_1y_1x_2y_2 + x_2^2y_2^2
+		\]
+		\[
+            => \phi(\x) = x_1^2\hat{i} + \sqrt{2}x_1x_2\hat{j} + x_2^2\hat{k}
+        \]
+		\[
+            => \phi(\y) = y_1^2\hat{i} + \sqrt{2}y_1y_2\hat{j} + y_2^2\hat{k}
+        \]
+        
+        
+		
 		\item~[2 points] $(\x^\top \y)^3$
+		
+		\emph{Answer}
+		
+		\[
+		    (\x^\top \y)^3 = x_1^3y_1^3 + 3x_1^2y_1^2x_2y_2 + 3x_1y_1x_2^2y_2^2 + x_2^3y_2^3
+		\]
+		\[
+            => \phi(\x) = x_1^3\hat{i} + \sqrt{3}x_1^2x_2\hat{j} + \sqrt{3}x_1x_2^2\hat{k} + x_2^3\hat{l}
+        \]
+		\[
+            => \phi(\y) = y_1^3\hat{i} + \sqrt{3}y_1^2y_2\hat{j} + \sqrt{3}y_1y_2^2\hat{k} + y_2^3\hat{l}
+        \]
+        
 		\item~[4 points] $(\x^\top \y)^k$ where $k$ is  any positive integer.  
+		
+		\emph{Answer}
+		
+		Seems to possibly correspond to the Binomial Theorem, $(x+y)^n = \sum_{k=0}^n {n \choose k}x^{n-k}y^k$. However, the difference here would be that for $\phi(\a)$ the $n \choose k$ term becomes $\sqrt{n \choose k}$. Will check a few more to be sure.
+		
+		\[
+		    (\x^\top \y)^4 = x_1^4y_1^4 + 4x_1^3y_1^3x_2y_2 + 6x_1^2y_1^2x_2^2y_2^2 + 4x_1y_1x_2^3y_2^3 + x_2^4y_2^4
+		\]
+		\[
+            => \phi(\x) = x_1^4\hat{i} + \sqrt{4}x_1^3x_2\hat{j} + \sqrt{6}x_1^2x_2^2\hat{k} + \sqrt{4}x_1x_2^3\hat{l} + x_2^4\hat{m}
+        \]
+		\[
+            => \phi(\y) = y_1^4\hat{i} + \sqrt{4}y_1^3y_2\hat{j} + \sqrt{6}y_1^2y_2^2\hat{k} + \sqrt{4}y_1y_2^3\hat{l} + y_2^4\hat{m}
+        \]
+        
+        \[
+		    (\x^\top \y)^5 = x_1^5y_1^5 + 5x_1^4y_1^4x_2y_2 + 10x_1^3y_1^3x_2^2y_2^2 + 10x_1^2y_1^2x_2^3y_2^3 + 5x_1y_1x_2^4y_2^4 + x_2^5y_2^5
+		\]
+		\[
+            => \phi(\x) = x_1^5\hat{i} + \sqrt{5}x_1^4x_2\hat{j} + \sqrt{10}x_1^3x_2^2\hat{k} + \sqrt{10}x_1^2x_2^3\hat{l} + \sqrt{5}x_1x_2^4\hat{m} + x_2^5\hat{n}
+        \]
+		\[
+            => \phi(\y) = y_1^5\hat{i} + \sqrt{5}y_1^4y_2\hat{j} + \sqrt{10}y_1^3y_2^2\hat{k} + \sqrt{10}y_1^2y_2^3\hat{l} + \sqrt{5}y_1y_2^4\hat{m} + y_2^5\hat{n}
+        \]
+        
+        By induction, we can apply the Binomial Theorem to $(\x^\top \y)^k$ with the changes described above. This leads to:
+        
+        \[
+            \phi(\x) = \sum_{i=0}^k \sqrt{k \choose i} x_1^{k-i} x_2^{i} \hat{i}
+        \]
+        \[
+            \phi(\y) = \sum_{i=0}^k \sqrt{k \choose i} y_1^{k-i} y_2^{i} \hat{i}
+        \]
+		
 	\end{enumerate}
 
 \item~[10 points] Suppose we have the training data shown in Table \ref{tb:1}, from which we want to learn a linear regression model, parameterized by a weight vector $\w$ and a bias parameter $b$.  
