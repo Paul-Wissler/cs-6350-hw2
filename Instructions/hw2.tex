@@ -308,10 +308,247 @@ where $D_t(i)$ is the weight of $i$-th training example, and $h_t(x_i)$ is the p
 \end{table}
 
 \begin{enumerate}
-	\item~[1 point] Write down the LMS (least mean square) cost function $J(\w, b)$. 
+	\item~[1 point] Write down the LMS (least mean square) cost function $J(\w, b)$.
+	
+	\emph{Answer}
+	
+	The bias is baked into the weights term, so we just need to extract it from regular $J(\w)$.
+	
+	\[
+	    J(\w) = \sum_{i=1}^m (y_i - \w^\top \x_i)^2
+	\]
+	\[
+	    => J(\w, b) = \sum_{i=1}^m (y_i - \w^\top \x_i - b)^2
+	\]
+	
 	\item~[3 points] Calculate the gradient $\frac{\nabla J}{\nabla \w}$ and $\frac{\nabla J}{\nabla b}$ when $\w = [-1,1,-1]^\top$ and $b = -1$.
+	
+	\emph{Answer}
+	
+	Code for solution can be found in Listing 1. The function q5b specifically calculates the gradient for the parameters and data (see Table 5) specified. In this case, we find the gradient to be:
+	
+	\[
+	\frac{dJ}{dw_1} = -22
+	\]
+	\[
+    \frac{dJ}{dw_2} = 16
+    \]
+    \[
+    \frac{dJ}{dw_3} = -56
+    \]
+    \[
+    \frac{dJ}{db} = -10
+    \]
+	
+	\begin{lstlisting}[language=Python, caption=QuestionAnswers.part1]
+
+import numpy as np
+
+
+def q5b():
+    x1 = np.array([1, 1, -1, 1, 3])
+    x2 = np.array([-1, 1, 1, 2, -1])
+    x3 = np.array([2, 3, 0, -4, -1])
+    X = np.array([x1, x2, x3]).T
+    y = np.array([1, 4, -1, -2, 0]).T
+    w = np.array([-1, 1, -1])
+    b = -1
+    for j in range(len(w)):
+        x_j = X[:, j]
+        djdw = calc_djdw(X, y, w, b, x_j)
+        print(f'dJ_dw_{j + 1}: {djdw}')
+    djdb = calc_djdb(X, y, w, b)
+    print(f'dJ_db: {djdb}')
+
+
+def q5c():
+    x1 = np.array([1, 1, -1, 1, 3])
+    x2 = np.array([-1, 1, 1, 2, -1])
+    x3 = np.array([2, 3, 0, -4, -1])
+    y = np.array([1, 4, -1, -2, 0]).T
+    y_x1 = -np.dot(x1, y)
+    print(f'y_x1: {y_x1}')
+    y_x2 = -np.dot(x2, y)
+    print(f'y_x2: {y_x2}')
+    y_x3 = -np.dot(x3, y)
+    print(f'y_x3: {y_x3}')
+    
+    x1_x1 = -np.dot(x1, x1)
+    print(f'x1_x1: {x1_x1}')
+    x1_x2 = -np.dot(x1, x2)
+    print(f'x1_x2: {x1_x2}')
+    x1_x3 = -np.dot(x1, x3)
+    print(f'x1_x3: {x1_x3}')
+
+    x2_x1 = -np.dot(x2, x1)
+    print(f'x2_x1: {x2_x1}')
+    x2_x2 = -np.dot(x2, x2)
+    print(f'x2_x2: {x2_x2}')
+    x2_x3 = -np.dot(x2, x3)
+    print(f'x2_x3: {x2_x3}')
+
+    x3_x1 = -np.dot(x3, x1)
+    print(f'x3_x1: {x3_x1}')
+    x3_x2 = -np.dot(x3, x2)
+    print(f'x3_x2: {x3_x2}')
+    x3_x3 = -np.dot(x3, x3)
+    print(f'x3_x3: {x3_x3}')
+
+
+def q5d():
+    x1 = np.array([1, 1, -1, 1, 3])
+    x2 = np.array([-1, 1, 1, 2, -1])
+    x3 = np.array([2, 3, 0, -4, -1])
+    X = np.array([x1, x2, x3]).T
+    y = np.array([1, 4, -1, -2, 0]).T
+    w = np.array([0.0, 0.0, 0.0])
+    b = 0
+    r = 0.1
+    for i in range(5):
+        for j in range(len(w)):
+            djdw = calc_djdw(X[i], y[i], w, b, X[i, j])
+            print(f'round {i + 1}, weight updated {j + 1}: {w[j]} + {r * djdw} = {w[j] + r * djdw}')
+            w[j] = w[j] + r * djdw
+        djdb = calc_djdb(X[i], y[i], w, b)
+        print(f'round {i + 1}, bias updated: {b} + {r * djdb} = {b + r * djdb}')
+        b = b + r * djdb
+    s = 0
+    for k in w:
+        print(f'w_{s + 1}: {k}')
+        s += 1
+    print(f'b: {b}')
+
+
+def calc_djdw(X, y, w, b, x_j):
+    return -np.sum(np.dot((y - np.dot(X, w) - b), x_j))
+
+
+def calc_djdb(X, y, w, b):
+    return -np.sum(y - np.dot(X, w) - b)
+
+
+def calc_cost(X, y, w, b):
+    return 0.5 * np.sum(np.square(y - np.dot(X, w) - b))
+
+
+	\end{lstlisting}
+	
 	\item~[3 points] What are the optimal $\w$ and $\b$ that minimize the cost function? 
-	\item~[3 points] Now, we want to use stochastic gradient descent to minimize $J(\w, b)$. We initialize $\w = \0$ and $b = 0$. We set the learning rate $r = 0.1$ and sequentially go through the $5$ training examples. Please list the stochastic gradient in each step and the updated $\w$ and $b$.  
+	
+	\emph{Answer}
+	
+	\[
+	    J(\w, b) = \frac{1}{2} \sum_{i=1}^m (y_i - \w^\top \x_i - b)^2
+	\]
+	\[
+        => \frac{dJ}{dw_j} = -\sum_{i=1}^m (y_i - \w^\top \x_i - b)x_{ij},  \frac{dJ}{db} = -\sum_{i=1}^m (y_i - \w^\top \x_i - b)
+    \]
+    Plugging in the data from Table 5, we see that:
+    \[
+       \frac{dJ}{db} = -2 + 5w_1 +2 w_2 + 0w_3 + 5b
+    \]
+    Setting this equal to 0 to minimize,
+    \[
+        => b = \frac{2}{5} - w_1 - \frac{2}{5}w_2
+    \]
+    \[
+        => \frac{dJ}{dw_j} = -\sum_{i=1}^m (y_i x_{ij} - w_1 x_{i1} x_{ij} - w_2 x_{i2} x_{ij} - w_3 x_{i3} x_{ij} - b x_{ij})
+    \]
+    \[
+        = -\sum_{i=1}^m y_i x_{ij} + w_1\sum_{i=1}^m x_{i1} x_{ij} + w_2\sum_{i=1}^m x_{i2} x_{ij} + w_3\sum_{i=1}^m x_{i3} x_{ij} + b\sum_{i=1}^m x_{ij}
+    \]
+    Function q5c in Listing 1 will calculate the sums above, giving us:
+    \[
+        \frac{dJ}{dw_1} = 4 - 13w_1 + 2w_2 + 2w_3 - 2 + 5w_1 + 2w_2 = 2 - 8w_1 + 4w_2 + 2w_3 = 0
+    \]
+    \[
+        \frac{dJ}{dw_2} = -2 + 2w_1 - 8w_2 + 6w_3 - \frac{4}{5} + 2w_1 + \frac{4}{5}w_2 = -\frac{14}{5} + 4w_1 - \frac{36}{5}w_2 + 6w_3 = 0
+    \]
+    \[
+        \frac{dJ}{dw_3} = 22 + 2w_1 + 6w_2 - 30w_3 - \frac{4}{5} + 2w_1 + \frac{4}{5}w_2 = -\frac{106}{5} + 4w_1 + \frac{34}{5}w_2 - 30w_3 = 0
+    \]
+    
+    Plugging this system of equations into \href{https://www.wolframalpha.com/input/?i=systems+of+equations+calculator}{Wolfram Alpha} (click for link), we get that:
+    \[
+        w_1 = \frac{247}{223}
+    \]
+    \[
+        w_2 = \frac{258}{223}
+    \]
+    \[
+        w_3 = \frac{249}{223}
+    \]
+    Which, plugging this back into our equation for $b$, we see that:
+    \[
+        b = -1.17
+    \]
+	
+	\item~[3 points] Now, we want to use stochastic gradient descent to minimize $J(\w, b)$. We initialize $\w = \0$ and $b = 0$. We set the learning rate $r = 0.1$ and sequentially go through the $5$ training examples. Please list the stochastic gradient in each step and the updated $\w$ and $b$. 
+	
+	\emph{Answer}
+	
+	Function q5d in Listing 1 gives these results:
+	
+	\emph{Round 1}:
+	
+	weight updated 1: $0.0 + -0.1 = -0.1$
+	
+	weight updated 2: $0.0 + 0.1100 = 0.1100$
+    
+    weight updated 3: $0.0 + -0.242 = -0.242$
+    
+    bias updated: $0 + -0.1694 = -0.1694$
+    
+    \emph{Round 2}:
+    
+    weight updated 1: $-0.1 + -0.4885 = -0.5885$
+    
+    weight updated 2: $0.1100 + -0.5374 = -0.4274$
+    
+    weight updated 3: $-0.2420 + -1.7734 = -2.0154$
+    
+    bias updated: $-0.1694 + -1.1232 = -1.2926$
+    
+    \emph{Round 3}:
+    
+    weight updated 1: $-0.5885 + 0.0131 = -0.5754$
+    
+    weight updated 2: $-0.4274 + -0.0145 = -0.4418$
+    
+    weight updated 3: $-2.0154 + -0.0 = -2.0154$
+    
+    bias updated: $-1.2926 + -0.0159 = -1.3085$
+    
+    \emph{Round 4}:
+    
+    weight updated 1: $-0.5754 + 0.7294 = 0.1540$
+    
+    weight updated 2: $-0.4418 + 1.6047 = 1.1628$
+    
+    weight updated 3: $-2.0154 + -4.4931 = -6.5085$
+    
+    bias updated: $-1.3085 + 2.9205 = 1.6121$
+    
+    \emph{Round 5}:
+    
+    weight updated 1: $0.1540 + 2.2259 = 2.3799$
+    
+    weight updated 2: $1.1628 + -1.4098 = -0.2469$
+    
+    weight updated 3: $-6.5085 + -1.5507 = -8.0593$
+    
+    bias updated: $1.6121 + 1.7058 = 3.3179$
+    
+    \emph{Final Results}
+    
+    $w_1 = 2.3799$
+    
+    $w_2 = -0.2469$
+    
+    $w_3 = -8.0593$
+    
+    $b = 3.3179$
+	
 \end{enumerate}
 \end{enumerate}
 
