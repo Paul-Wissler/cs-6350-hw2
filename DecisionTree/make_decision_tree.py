@@ -21,7 +21,6 @@ class DecisionTreeModel:
             error_f=error_f, max_tree_depth=self.calc_max_tree_depth()
         )
         del self.X
-        # del self.y
     
     def convert_numeric_vals_to_categorical(self, X: pd.DataFrame) -> pd.DataFrame:
         if not self.numeric_cols:
@@ -94,15 +93,10 @@ class DecisionTreeModel:
         node = list(tree.keys())[0]
         try:
             if isinstance(tree[node][row[node]], str):
-                # print('NOT USING MODE')
                 return tree[node][row[node]]
             elif isinstance(tree[node], dict):
                 return self.check_tree(row, tree[node][row[node]])
             else:
-                # print('USING MODE')
-                # return 'TREE FAILED' # 
                 return self.y_mode
         except KeyError:
-            # print('USING MODE')
-            # return 'TREE FAILED' # 
             return self.y_mode

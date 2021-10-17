@@ -16,9 +16,10 @@ class BatchGradientDescentModel:
 
     def create_model(self, X: pd.DataFrame, y: pd.Series, bias: float):
         w = pd.Series([0] * len(X.columns), index=X.columns)
-        self.convergence_of_weights = pd.Series(
+        self.cost_of_each_step = pd.Series(
             [self.compute_cost(self.X.copy(), self.y.copy(), w)]
         ).reset_index(drop=True)
+        self.convergence_of_weights = pd.Series()
         w.loc['MODEL_BIAS'] = bias
         i = 0
         while i <= self.max_rounds + 1:

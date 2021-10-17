@@ -278,12 +278,12 @@ def main():
     # part2.q2e()
     # part2.q2e_final()
 
-    part2.q3_plots()
+    # part2.q3_plots()
     
     # part2.q4a()
     # part2.q4a_final()
-    # part2.q4b()
-    # part2.q4b_final()
+    part2.q4b()
+    part2.q4b_final()
     # part2.q4c()
 
     # import json

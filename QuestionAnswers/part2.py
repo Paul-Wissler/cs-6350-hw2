@@ -506,8 +506,8 @@ def q3_plots():
     plt.xlabel('Trees')
 
     plt.savefig('q3_random_forest_plot.png')
-
-    plt.show()
+    # plt.show()
+    plt.close()
 
 
 def load_cement_data(t='train.csv') -> pd.DataFrame:
@@ -605,11 +605,22 @@ def q4a_final():
     fig, ax = plt.subplots(1, 1)
     data.plot()
     ax.set_yscale('log')
-    ax.set_xscale('log')
+    # ax.set_xscale('log')
     plt.ylabel('$||\\mathregular{w_i} - \\mathregular{w_{i-1}}||$')
     plt.xlabel('Round')
-    plt.savefig('part2_q4a.png')
+    plt.savefig('part2_q4a_convergence.png')
+    plt.close()
+
+    data = pd.read_csv('q4a_cost_of_each_step.csv')['0']
+    fig, ax = plt.subplots(1, 1)
+    data.plot()
+    ax.set_xscale('log')
+    plt.ylabel('Cost')
+    plt.xlabel('Round')
+    plt.savefig('part2_q4a_cost.png')
+
     # plt.show()
+    plt.close()
 
 
 def q4b():
@@ -626,7 +637,7 @@ def q4b():
     test_c_data = load_cement_data('test.csv')
 
     model = lr.StochasticGradientDescentModel(
-        c_data[x_cols], c_data.Output, rate=0.0005, max_rounds=10000
+        c_data[x_cols], c_data.Output, rate=0.005, max_rounds=10000, convergence_threshold=1e-8
         # c_data[x_cols], c_data.Output, rate=0.01, max_rounds=5000
     )
     cost = model.compute_cost(test_c_data[x_cols], test_c_data.Output, model.weights)
@@ -642,45 +653,45 @@ def q4b():
     print(model.weights)
     model.weights.to_csv('q4b_weights.csv')
 
-    # COST: 41.04846572489124
+    # COST: 39.57331988956421
 
     # CONVERGENCE OF WEIGHTS
-    # 0       6.001037e+01
-    # 1       1.491483e-04
-    # 2       1.481438e-03
-    # 3       6.661488e-04
-    # 4       9.569676e-04
-    #             ...
-    # 2553    2.338325e-03
-    # 2554    2.367669e-04
-    # 2555    7.226300e-04
-    # 2556    3.196948e-04
-    # 2557    8.244933e-07
-    # Length: 2558, dtype: float64
+    # 0        60.010374
+    # 1         0.002521
+    # 2         0.007133
+    # 3         0.006019
+    # 4         0.009594
+    #            ...
+    # 9996      0.021375
+    # 9997      0.011299
+    # 9998      0.005541
+    # 9999      0.002387
+    # 10000     0.005777
+    # Length: 10001, dtype: float64
 
     # COST OF EACH STEP
-    # 0       60.003233
-    # 1       59.869479
-    # 2       59.846828
-    # 3       59.797806
-    # 4       59.666681
+    # 0       59.999705
+    # 1       59.830798
+    # 2       59.284214
+    # 3       59.239627
+    # 4       59.232389
     #           ...
-    # 2552    31.310176
-    # 2553    31.304040
-    # 2554    31.311249
-    # 2555    31.308078
-    # 2556    31.308107
-    # Length: 2557, dtype: float64
+    # 9995    22.791068
+    # 9996    22.873301
+    # 9997    22.849236
+    # 9998    22.827695
+    # 9999    22.824463
+    # Length: 10000, dtype: float64
 
     # WEIGHT VECTOR
-    # Cement        0.030679
-    # Slag         -0.130154
-    # FlyAsh       -0.127862
-    # Water         0.262171
-    # SP           -0.024053
-    # CoarseAggr    0.058613
-    # FineAggr     -0.018950
-    # MODEL_BIAS   -0.015117
+    # Cement        0.036170
+    # Slag         -0.156407
+    # FlyAsh       -0.105242
+    # Water         0.469587
+    # SP           -0.049837
+    # CoarseAggr    0.327384
+    # FineAggr      0.057579
+    # MODEL_BIAS   -0.016069
     # Name: weights, dtype: float64
 
 
@@ -689,7 +700,16 @@ def q4b_final():
     fig = data.plot().set_yscale('log')
     plt.ylabel('$||\\mathregular{w_i} - \\mathregular{w_{i-1}}||$')
     plt.xlabel('Round')
-    plt.savefig('part2_q4b.png')
+    plt.savefig('part2_q4b_convergence.png')
+    plt.close()
+
+    data = pd.read_csv('q4b_cost_of_each_step.csv')['0']
+    fig, ax = plt.subplots(1, 1)
+    data.plot()
+    plt.ylabel('Cost')
+    plt.xlabel('Round')
+    plt.savefig('part2_q4b_cost.png')
+    plt.close()
 
 
 def q4c():
