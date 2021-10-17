@@ -43,7 +43,7 @@ def calc_weighted_gain(x: pd.Series, y: pd.Series, w: pd.Series,
     # print('\n\n')
     # print(H_y)
     # print(sum(e))
-    print(f'{x.name}: {H_y - np.sum(e)}')
+    # print(f'{x.name}: {H_y - np.sum(e)}')
     return H_y - np.sum(e)
 
 

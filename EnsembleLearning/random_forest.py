@@ -10,9 +10,11 @@ class RandomForestModel(BaggerModel):
 
     def __init__(self, X: pd.DataFrame, y: pd.Series, sample_rate=None, bag_rounds=100,
             error_f=calc_entropy, max_tree_depth=None, num_sample_attributes=2,
-            default_value_selection='majority', reproducible_seed=True):
+            default_value_selection='subset_majority', reproducible_seed=True):
         self.X = X.copy()
         self.y = y.copy()
+        self.numeric_cols = self.determine_numeric_cols()
+        self.median = self.calc_median()
         self.default_value_selection = default_value_selection
         self.error_f = error_f
         self.max_tree_depth = max_tree_depth
@@ -22,10 +24,12 @@ class RandomForestModel(BaggerModel):
             sample_rate=sample_rate, bag_rounds=bag_rounds, error_f=error_f, 
             max_tree_depth=self.max_tree_depth, reproducible_seed=reproducible_seed,
         )
+        del self.X
+        del self.y
 
     def create_random_forest(self, X: pd.DataFrame, y: pd.Series, sample_rate=None, 
-        bag_rounds=100, error_f=calc_entropy, max_tree_depth=None, 
-        reproducible_seed=True) -> list:
+            bag_rounds=100, error_f=calc_entropy, max_tree_depth=None, 
+            reproducible_seed=True) -> list:
         if not sample_rate:
             sample_rate = self.auto_calc_subset(len(X))
         bag = list()
@@ -38,4 +42,5 @@ class RandomForestModel(BaggerModel):
                 X_s = X[A].sample(n=sample_rate, replace=True)
             y_s = y.iloc[X_s.index]
             bag.append(dtree.DecisionTreeModel(X_s, y_s))
+            # print(f'round: {t}')
         return bag

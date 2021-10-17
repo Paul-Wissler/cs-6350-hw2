@@ -76,7 +76,7 @@ def calc_discrete_probability(x: np.array, null_x_v=pd.Series([]),
     for i in unique_vals:
         num = sum(x==i) + null_frac * sum(null_x_v==i)
         p[i] = num / (len(x) + null_size)
-    print('test', p)
+    # print('test', p)
     return p
 
 

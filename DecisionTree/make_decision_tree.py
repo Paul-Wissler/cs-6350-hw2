@@ -7,16 +7,21 @@ from .error_calcs import calc_gain, calc_entropy
 class DecisionTreeModel:
 
     def __init__(self, X: pd.DataFrame, y: pd.Series, error_f=calc_entropy, 
-            max_tree_depth=None, default_value_selection='majority'):
+            max_tree_depth=None, default_value_selection='subset_majority'):
         self.X = X.copy()
         self.y = y.copy()
+        self.y_mode = y.mode().iloc[0]
+        self.numeric_cols = self.determine_numeric_cols()
+        self.median = self.calc_median()
         self.default_value_selection = default_value_selection
         self.error_f = error_f
         self.input_max_tree_depth = max_tree_depth
         self.tree = self.make_decision_tree(
             self.convert_numeric_vals_to_categorical(X.copy()), y, 
-            error_f=error_f, max_tree_depth=self.max_tree_depth
+            error_f=error_f, max_tree_depth=self.calc_max_tree_depth()
         )
+        del self.X
+        # del self.y
     
     def convert_numeric_vals_to_categorical(self, X: pd.DataFrame) -> pd.DataFrame:
         if not self.numeric_cols:
@@ -27,16 +32,13 @@ class DecisionTreeModel:
             X[col].loc[~is_gte_m] = f'<{m}'
         return X
 
-    @property
-    def numeric_cols(self) -> list:
+    def determine_numeric_cols(self) -> list:
         return self.X.select_dtypes(include=np.number).columns.tolist()
 
-    @property
-    def median(self) -> pd.Series:
+    def calc_median(self) -> pd.Series:
         return self.X[self.numeric_cols].median()
 
-    @property
-    def max_tree_depth(self):
+    def calc_max_tree_depth(self):
         max_len = len(self.X.columns)
         if not self.input_max_tree_depth:
             return max_len
@@ -47,7 +49,7 @@ class DecisionTreeModel:
 
     def default_value(self, y):
         if self.default_value_selection == 'majority':
-            return self.y.groupby(self.y).count().idxmax()
+            return y.groupby(y).count().idxmax()
         elif self.default_value_selection == 'subset_majority':
             return y.groupby(y).count().idxmax()
 
@@ -92,10 +94,15 @@ class DecisionTreeModel:
         node = list(tree.keys())[0]
         try:
             if isinstance(tree[node][row[node]], str):
+                # print('NOT USING MODE')
                 return tree[node][row[node]]
             elif isinstance(tree[node], dict):
                 return self.check_tree(row, tree[node][row[node]])
             else:
-                return self.y.mode().iloc[0]
+                # print('USING MODE')
+                # return 'TREE FAILED' # 
+                return self.y_mode
         except KeyError:
-            return self.y.mode().iloc[0]
+            # print('USING MODE')
+            # return 'TREE FAILED' # 
+            return self.y_mode
