@@ -266,9 +266,7 @@ def main():
     
     part2.q2b()
     part2.q2b_final()
-    
-    part2.q2d()
-    
+        
     part2.q4a()
     part2.q4a_final()
     part2.q4b()

@@ -638,7 +638,6 @@ def q4b():
 
     model = lr.StochasticGradientDescentModel(
         c_data[x_cols], c_data.Output, rate=0.005, max_rounds=10000, convergence_threshold=1e-8
-        # c_data[x_cols], c_data.Output, rate=0.01, max_rounds=5000
     )
     cost = model.compute_cost(test_c_data[x_cols], test_c_data.Output, model.weights)
     
