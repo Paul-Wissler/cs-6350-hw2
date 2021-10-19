@@ -257,353 +257,346 @@ def q2e_forest_build_and_eval(_):
     )
     # (full_forest, single)
     return pd.Series(model.evaluate(X_test)), pd.Series(model.model[0].evaluate(X_test))
-    # bagged_tree_results[i] = pd.Series(model.evaluate(X_test))
-    # single_tree_results[i] = pd.Series(model.model[0].evaluate(X_test))
 
 
 def main():
-    # pool = Pool()
-    # part1.q5b()
-    # part1.q5c()
-    # part1.q5d()
-
-    # part2.q2a()
-    # part2.q2a_final()
-    # part2.q2b()
-    # part2.q2b_final()
-    # part2.q2c()
-    # part2.q2c_final()
-    # part2.q2d()
-    # part2.q2d_final()
-    # part2.q2e()
-    # part2.q2e_final()
-
-    # part2.q3_plots()
+    part1.q5b()
+    part1.q5c()
+    part1.q5d()
     
-    # part2.q4a()
-    # part2.q4a_final()
+    part2.q2b()
+    part2.q2b_final()
+    
+    part2.q2d()
+    
+    part2.q4a()
+    part2.q4a_final()
     part2.q4b()
     part2.q4b_final()
-    # part2.q4c()
+    part2.q4c()
 
     # import json
     # print('final tree: ', json.dumps(model.tree, sort_keys=True, indent=2))
 
-    # # q2a
-    # model, X, y, X_test, y_test = part2.make_q2a_model()
-    # with Pool() as pool:
-    #     train_results = pool.starmap(
-    #         adaboost_test_cumulative_trees, 
-    #         zip(
-    #             repeat(model),
-    #             repeat(X.copy()),
-    #             repeat(y.copy()),
-    #             range(len(model.trees))
-    #         )
-    #     )
-    #     test_results = pool.starmap(
-    #         adaboost_test_cumulative_trees, 
-    #         zip(
-    #             repeat(model),
-    #             repeat(X_test.copy()),
-    #             repeat(y_test.copy()),
-    #             range(len(model.trees))
-    #         )
-    #     )
+    # q2a ######################################################################
+    model, X, y, X_test, y_test = part2.make_q2a_model()
+    with Pool() as pool:
+        train_results = pool.starmap(
+            adaboost_test_cumulative_trees, 
+            zip(
+                repeat(model),
+                repeat(X.copy()),
+                repeat(y.copy()),
+                range(len(model.trees))
+            )
+        )
+        test_results = pool.starmap(
+            adaboost_test_cumulative_trees, 
+            zip(
+                repeat(model),
+                repeat(X_test.copy()),
+                repeat(y_test.copy()),
+                range(len(model.trees))
+            )
+        )
 
-    # bagged_tree_results = pd.Series()
-    # single_tree_results = pd.Series()
-    # for s, c in test_results:
-    #     bagged_tree_results = bagged_tree_results.append(c)
-    #     single_tree_results = single_tree_results.append(s)
+    bagged_tree_results = pd.Series()
+    single_tree_results = pd.Series()
+    for s, c in test_results:
+        bagged_tree_results = bagged_tree_results.append(c)
+        single_tree_results = single_tree_results.append(s)
 
-    # print(bagged_tree_results)
-    # print(single_tree_results)
+    print(bagged_tree_results)
+    print(single_tree_results)
 
-    # bagged_tree_results.to_csv('TEST_q2a_test_cum_results.csv')
-    # single_tree_results.sort_index().to_csv('TEST_q2a_test_single_results.csv')
+    bagged_tree_results.to_csv('TEST_q2a_test_cum_results.csv')
+    single_tree_results.sort_index().to_csv('TEST_q2a_test_single_results.csv')
 
-    # bagged_tree_results = pd.Series()
-    # single_tree_results = pd.Series()
-    # for s, c in train_results:
-    #     bagged_tree_results = bagged_tree_results.append(c)
-    #     single_tree_results = single_tree_results.append(s)
+    bagged_tree_results = pd.Series()
+    single_tree_results = pd.Series()
+    for s, c in train_results:
+        bagged_tree_results = bagged_tree_results.append(c)
+        single_tree_results = single_tree_results.append(s)
 
-    # print(bagged_tree_results)
-    # print(single_tree_results)
+    print(bagged_tree_results)
+    print(single_tree_results)
 
-    # bagged_tree_results.to_csv('TEST_q2a_train_cum_results.csv')
-    # single_tree_results.to_csv('TEST_q2a_train_single_results.csv')
+    bagged_tree_results.to_csv('TEST_q2a_train_cum_results.csv')
+    single_tree_results.to_csv('TEST_q2a_train_single_results.csv')
 
-    # # q2c
-    # with Pool() as pool:
-        # results = pool.map(q2c_bag_build_and_eval, range(100))
+    part2.q2a_final()
 
-    # bagged_tree_results = pd.DataFrame()
-    # single_tree_results = pd.DataFrame()
-    # i = 0
-    # for b, s in results:
-    #     bagged_tree_results[i] = b.copy()
-    #     single_tree_results[i] = s.copy()
-    #     i += 1
+    # q2c ######################################################################
+    with Pool() as pool:
+        results = pool.map(q2c_bag_build_and_eval, range(100))
 
-    # bagged_tree_results.replace(to_replace='no', value=0, inplace=True)
-    # single_tree_results.replace(to_replace='no', value=0, inplace=True)
-    # bagged_tree_results.replace(to_replace='yes', value=1, inplace=True)
-    # single_tree_results.replace(to_replace='yes', value=1, inplace=True)
-    # bagged_tree_results.to_csv('TEST_q2c_bagged_tree_results.csv', index=False)
-    # single_tree_results.to_csv('TEST_q2c_single_tree_results.csv', index=False)
+    bagged_tree_results = pd.DataFrame()
+    single_tree_results = pd.DataFrame()
+    i = 0
+    for b, s in results:
+        bagged_tree_results[i] = b.copy()
+        single_tree_results[i] = s.copy()
+        i += 1
 
-    # # q2d
-    # X, y = part2.format_bank_data(part2.load_bank_data('train.csv'))
-    # X_test, y_test = part2.format_bank_data(part2.load_bank_data('test.csv'))
-    # with Pool() as pool:
-    #     pool.starmap(
-    #         random_forest_attr_test, 
-    #         zip(
-    #             repeat(X.copy()),
-    #             repeat(y.copy()),
-    #             repeat(X_test.copy()),
-    #             repeat(y_test.copy()),
-    #             [2, 4, 6]
-    #         )
-    #     )
+    bagged_tree_results.replace(to_replace='no', value=0, inplace=True)
+    single_tree_results.replace(to_replace='no', value=0, inplace=True)
+    bagged_tree_results.replace(to_replace='yes', value=1, inplace=True)
+    single_tree_results.replace(to_replace='yes', value=1, inplace=True)
+    bagged_tree_results.to_csv('TEST_q2c_bagged_tree_results.csv', index=False)
+    single_tree_results.to_csv('TEST_q2c_single_tree_results.csv', index=False)
 
-    # # q2e
-    # with Pool() as pool:
-        # results = pool.map(q2e_forest_build_and_eval, range(100))
+    part2.q2c_final()
 
-    # bagged_tree_results = pd.DataFrame()
-    # single_tree_results = pd.DataFrame()
-    # i = 0
-    # for b, s in results:
-    #     bagged_tree_results[i] = b.copy()
-    #     single_tree_results[i] = s.copy()
-    #     i += 1
+    # q2d ######################################################################
+    X, y = part2.format_bank_data(part2.load_bank_data('train.csv'))
+    X_test, y_test = part2.format_bank_data(part2.load_bank_data('test.csv'))
+    with Pool() as pool:
+        pool.starmap(
+            random_forest_attr_test, 
+            zip(
+                repeat(X.copy()),
+                repeat(y.copy()),
+                repeat(X_test.copy()),
+                repeat(y_test.copy()),
+                [2, 4, 6]
+            )
+        )
+
+    part2.q2d_final()
+
+    # q2e ######################################################################
+    with Pool() as pool:
+        results = pool.map(q2e_forest_build_and_eval, range(100))
+
+    bagged_tree_results = pd.DataFrame()
+    single_tree_results = pd.DataFrame()
+    i = 0
+    for b, s in results:
+        bagged_tree_results[i] = b.copy()
+        single_tree_results[i] = s.copy()
+        i += 1
         
-    # bagged_tree_results.replace(to_replace='no', value=0, inplace=True)
-    # single_tree_results.replace(to_replace='no', value=0, inplace=True)
-    # bagged_tree_results.replace(to_replace='yes', value=1, inplace=True)
-    # single_tree_results.replace(to_replace='yes', value=1, inplace=True)
-    # bagged_tree_results.to_csv('TEST_q2e_full_forest_results.csv', index=False)
-    # single_tree_results.to_csv('TEST_q2e_single_tree_results.csv', index=False)
+    bagged_tree_results.replace(to_replace='no', value=0, inplace=True)
+    single_tree_results.replace(to_replace='no', value=0, inplace=True)
+    bagged_tree_results.replace(to_replace='yes', value=1, inplace=True)
+    single_tree_results.replace(to_replace='yes', value=1, inplace=True)
+    bagged_tree_results.to_csv('TEST_q2e_full_forest_results.csv', index=False)
+    single_tree_results.to_csv('TEST_q2e_single_tree_results.csv', index=False)
 
-    # # q3
-    # X, y, X_test, y_test = part2.split_credit_default_data(
-    #     part2.format_credit_default_data(
-    #         part2.load_credit_default_data()
-    #     )
-    # )
+    part2.q2e_final()
 
-    # # Single Decision Tree(s)
-    # print('SINGLE DECISION TREE(S)')
-    # with Pool() as pool:
-    #     results = pool.starmap(
-    #         q3_make_decision_tree,
-    #         zip(
-    #             repeat(X.copy()),
-    #             repeat(y.copy()),
-    #             range(1, len(X.columns)+1)
-    #         )
-    #     )
+    # q3 ######################################################################
+    X, y, X_test, y_test = part2.split_credit_default_data(
+        part2.format_credit_default_data(
+            part2.load_credit_default_data()
+        )
+    )
 
-    # models = pd.Series()
-    # for model, tree in results:
-    #     models = models.append(pd.Series(model, index=[tree]))
+    # Single Decision Tree(s)
+    print('SINGLE DECISION TREE(S)')
+    with Pool() as pool:
+        results = pool.starmap(
+            q3_make_decision_tree,
+            zip(
+                repeat(X.copy()),
+                repeat(y.copy()),
+                range(1, len(X.columns)+1)
+            )
+        )
 
-    # with Pool() as pool:
-    #     train_results = pool.starmap(
-    #         q3_test_decision_tree,
-    #         zip(
-    #             repeat(models),
-    #             repeat(X.copy()),
-    #             repeat(y.copy()),
-    #             models.index.to_list(),
-    #         )
-    #     )
-    #     test_results = pool.starmap(
-    #         q3_test_decision_tree,
-    #         zip(
-    #             repeat(models),
-    #             repeat(X_test.copy()),
-    #             repeat(y_test.copy()),
-    #             models.index.to_list(),
-    #         )
-    #     )
+    models = pd.Series()
+    for model, tree in results:
+        models = models.append(pd.Series(model, index=[tree]))
 
-    # test_results_series = pd.Series()
-    # for result, i in test_results:
-    #     test_results_series = test_results_series.append(pd.Series(result, index=[i]))
+    with Pool() as pool:
+        train_results = pool.starmap(
+            q3_test_decision_tree,
+            zip(
+                repeat(models),
+                repeat(X.copy()),
+                repeat(y.copy()),
+                models.index.to_list(),
+            )
+        )
+        test_results = pool.starmap(
+            q3_test_decision_tree,
+            zip(
+                repeat(models),
+                repeat(X_test.copy()),
+                repeat(y_test.copy()),
+                models.index.to_list(),
+            )
+        )
 
-    # train_results_series = pd.Series()
-    # for result, i in train_results:
-    #     train_results_series = train_results_series.append(pd.Series(result, index=[i]))
+    test_results_series = pd.Series()
+    for result, i in test_results:
+        test_results_series = test_results_series.append(pd.Series(result, index=[i]))
 
-    # print(test_results_series)
-    # print(train_results_series)
+    train_results_series = pd.Series()
+    for result, i in train_results:
+        train_results_series = train_results_series.append(pd.Series(result, index=[i]))
 
-    # test_results_series.to_csv('q3_decision_trees_test_results.csv')
-    # train_results_series.to_csv('q3_decision_trees_train_results.csv')
+    print(test_results_series)
+    print(train_results_series)
 
-    # # AdaBoost
-    # print('ADABOOST')
-    # model = part2.q3_make_adaboost_model(X.copy(), y.copy())
-    # ix = [
-    #     1,
-    #     5,
-    #     10,
-    #     50,
-    #     100,
-    #     150,
-    #     200,
-    #     250,
-    #     300,
-    #     350,
-    #     400,
-    #     500,
-    # ]
+    test_results_series.to_csv('q3_decision_trees_test_results.csv')
+    train_results_series.to_csv('q3_decision_trees_train_results.csv')
 
-    # with Pool() as pool:
-    #     train_results = pool.starmap(
-    #         adaboost_test, 
-    #         zip(
-    #             repeat(model),
-    #             repeat(X.copy()),
-    #             repeat(y.copy()),
-    #             # range(len(model.trees))
-    #             ix
-    #         )
-    #     )
-    #     test_results = pool.starmap(
-    #         adaboost_test, 
-    #         zip(
-    #             repeat(model),
-    #             repeat(X_test.copy()),
-    #             repeat(y_test.copy()),
-    #             # range(len(model.trees))
-    #             ix
-    #         )
-    #     )
+    # AdaBoost
+    print('ADABOOST')
+    model = part2.q3_make_adaboost_model(X.copy(), y.copy())
+    ix = [
+        1,
+        5,
+        10,
+        50,
+        100,
+        150,
+        200,
+        250,
+        300,
+        350,
+        400,
+        500,
+    ]
 
-    # train_results_series = pd.Series()
-    # for r in train_results:
-    #     train_results_series = train_results_series.append(r)
+    with Pool() as pool:
+        train_results = pool.starmap(
+            adaboost_test, 
+            zip(
+                repeat(model),
+                repeat(X.copy()),
+                repeat(y.copy()),
+                ix
+            )
+        )
+        test_results = pool.starmap(
+            adaboost_test, 
+            zip(
+                repeat(model),
+                repeat(X_test.copy()),
+                repeat(y_test.copy()),
+                ix
+            )
+        )
 
-    # test_results_series = pd.Series()
-    # for r in test_results:
-    #     test_results_series = test_results_series.append(r)
+    train_results_series = pd.Series()
+    for r in train_results:
+        train_results_series = train_results_series.append(r)
 
-    # print(train_results_series)
-    # print(test_results_series)
+    test_results_series = pd.Series()
+    for r in test_results:
+        test_results_series = test_results_series.append(r)
 
-    # train_results_series.to_csv('q3_adaboost_train_results.csv')
-    # test_results_series.to_csv('q3_adaboost_test_results.csv')
+    print(train_results_series)
+    print(test_results_series)
 
-    # # Bagger
-    # print('BAGGER')
-    # model = part2.q3_make_bagger_model(X.copy(), y.copy())
-    # ix = [
-    #     1,
-    #     5,
-    #     10,
-    #     50,
-    #     100,
-    #     150,
-    #     200,
-    #     250,
-    #     300,
-    #     350,
-    #     400,
-    #     500,
-    # ]
+    train_results_series.to_csv('q3_adaboost_train_results.csv')
+    test_results_series.to_csv('q3_adaboost_test_results.csv')
 
-    # with Pool() as pool:
-    #     train_results = pool.starmap(
-    #         bagger_test_cumulative_trees, 
-    #         zip(
-    #             repeat(model),
-    #             repeat(X.copy()),
-    #             repeat(y.copy()),
-    #             # range(len(model.model))
-    #             ix
-    #         )
-    #     )
-    #     test_results = pool.starmap(
-    #         bagger_test_cumulative_trees, 
-    #         zip(
-    #             repeat(model),
-    #             repeat(X_test.copy()),
-    #             repeat(y_test.copy()),
-    #             # range(len(model.model))
-    #             ix
-    #         )
-    #     )
+    # Bagger
+    print('BAGGER')
+    model = part2.q3_make_bagger_model(X.copy(), y.copy())
+    ix = [
+        1,
+        5,
+        10,
+        50,
+        100,
+        150,
+        200,
+        250,
+        300,
+        350,
+        400,
+        500,
+    ]
 
-    # train_results_series = pd.Series()
-    # for r in train_results:
-    #     train_results_series = train_results_series.append(r)
+    with Pool() as pool:
+        train_results = pool.starmap(
+            bagger_test_cumulative_trees, 
+            zip(
+                repeat(model),
+                repeat(X.copy()),
+                repeat(y.copy()),
+                ix
+            )
+        )
+        test_results = pool.starmap(
+            bagger_test_cumulative_trees, 
+            zip(
+                repeat(model),
+                repeat(X_test.copy()),
+                repeat(y_test.copy()),
+                ix
+            )
+        )
 
-    # test_results_series = pd.Series()
-    # for r in test_results:
-    #     test_results_series = test_results_series.append(r)
+    train_results_series = pd.Series()
+    for r in train_results:
+        train_results_series = train_results_series.append(r)
+
+    test_results_series = pd.Series()
+    for r in test_results:
+        test_results_series = test_results_series.append(r)
     
-    # print(train_results_series)
-    # print(test_results_series)
-    # train_results_series.to_csv('q3_bagger_train_results.csv')
-    # test_results_series.to_csv('q3_bagger_test_results.csv')
+    print(train_results_series)
+    print(test_results_series)
+    train_results_series.to_csv('q3_bagger_train_results.csv')
+    test_results_series.to_csv('q3_bagger_test_results.csv')
 
-    # # Random Forest
-    # print('RANDOM FOREST')
-    # model = part2.q3_make_random_forest_model(X.copy(), y.copy())
-    # ix = [
-    #     1,
-    #     5,
-    #     10,
-    #     50,
-    #     100,
-    #     150,
-    #     200,
-    #     250,
-    #     300,
-    #     350,
-    #     400,
-    #     500,
-    # ]
+    # Random Forest
+    print('RANDOM FOREST')
+    model = part2.q3_make_random_forest_model(X.copy(), y.copy())
+    ix = [
+        1,
+        5,
+        10,
+        50,
+        100,
+        150,
+        200,
+        250,
+        300,
+        350,
+        400,
+        500,
+    ]
 
-    # with Pool() as pool:
-    #     train_results = pool.starmap(
-    #         bagger_test_cumulative_trees, 
-    #         zip(
-    #             repeat(model),
-    #             repeat(X.copy()),
-    #             repeat(y.copy()),
-    #             # range(len(model.model))
-    #             ix
-    #         )
-    #     )
-    #     test_results = pool.starmap(
-    #         bagger_test_cumulative_trees, 
-    #         zip(
-    #             repeat(model),
-    #             repeat(X_test.copy()),
-    #             repeat(y_test.copy()),
-    #             # range(len(model.model))
-    #             ix
-    #         )
-    #     )
+    with Pool() as pool:
+        train_results = pool.starmap(
+            bagger_test_cumulative_trees, 
+            zip(
+                repeat(model),
+                repeat(X.copy()),
+                repeat(y.copy()),
+                ix
+            )
+        )
+        test_results = pool.starmap(
+            bagger_test_cumulative_trees, 
+            zip(
+                repeat(model),
+                repeat(X_test.copy()),
+                repeat(y_test.copy()),
+                ix
+            )
+        )
 
-    # train_results_series = pd.Series()
-    # for r in train_results:
-    #     train_results_series = train_results_series.append(r)
+    train_results_series = pd.Series()
+    for r in train_results:
+        train_results_series = train_results_series.append(r)
 
-    # test_results_series = pd.Series()
-    # for r in test_results:
-    #     test_results_series = test_results_series.append(r)
+    test_results_series = pd.Series()
+    for r in test_results:
+        test_results_series = test_results_series.append(r)
     
-    # print(train_results_series)
-    # print(test_results_series)
-    # train_results_series.to_csv('q3_random_forest_train_results.csv')
-    # test_results_series.to_csv('q3_random_forest_test_results.csv')
+    print(train_results_series)
+    print(test_results_series)
+    train_results_series.to_csv('q3_random_forest_train_results.csv')
+    test_results_series.to_csv('q3_random_forest_test_results.csv')
+    
+    part2.q3_plots()
 
 
 if __name__ == '__main__':

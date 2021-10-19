@@ -2,7 +2,7 @@
 This is a machine learning library developed by Paul Wissler for CS 6350 in University of Utah
 
 # Instructions
-main.py can run most of this code, but bear in mind that many of the algorithms take a very long time to run, even with multiprocessing.
+main.py can run most of this code, but bear in mind that many of the algorithms take a very long time to run, even with multiprocessing. All results can be reproduced by running main.py, with all questions being able to be reproduced by running the proper function from QuestionAnswers module (e.g. to get part 1 question 3a results, run QuestionAnswers.part1.q3a). However, for some of the results require far more processing power, and these are put into main.py directly under appropriate section headings (i.e. part 2 q1a is under q1a section, identified with a comment and followed by a long line of #'s). The following questions (all from part 2) are in these sections: q2a, q2c, q2d, q2e, q3.
 
 There are three modules of interest to the TA's: DecisionTree, EnsembleLearning, and LinearRegression. These are all packages, so all you need to do is import them like so:
 
